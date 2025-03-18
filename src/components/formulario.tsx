@@ -1,36 +1,13 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-
-interface FormData {
-    nombrePdf: string;
-    asignatura: string;
-    archivo: File | null;
-}
-
-interface UploadFormProps {
-    onSubmit: (data: FormData) => void;
-}
-
-const MAX_FILE_SIZE_MB = 4;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const ALLOWED_SUBJECTS = [
-    'Matemáticas',
-    'Lengua',
-    'Inglés',
-    'Ciencias Naturales',
-    'Ciencias Sociales',
-    'Educación Física',
-    'Música',
-    'Plástica',
-    'Francés',
-    'Valores Éticos'
-];
-const PDF_NAME_REGEX = /^[a-zA-Z0-9\s]+$/;
-const DEFAULT_FORM_DATA: FormData = {
-    nombrePdf: '',
-    asignatura: '',
-    archivo: null
-};
+import { FormData, UploadFormProps } from '@/interfaces';
+import {
+    PDF_NAME_REGEX,
+    MAX_FILE_SIZE_BYTES,
+    MAX_FILE_SIZE_MB,
+    DEFAULT_FORM_DATA,
+    ALLOWED_SUBJECTS
+} from '@/constants';
 
 const validatePdfName = (value: string): string | null =>
     PDF_NAME_REGEX.test(value) ? null : 'El nombre del PDF solo debe contener caracteres alfanuméricos y espacios.';
