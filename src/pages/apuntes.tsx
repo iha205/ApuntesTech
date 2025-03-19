@@ -1,11 +1,10 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { FormData } from '@/interfaces';
+import { DataFormulario } from '@/interfaces';
 import Link from 'next/link';
 import { geistMono, geistSans } from '@/fonts';
 import axios from 'axios';
 
-// Fictional data for demonstration
-const initialData: FormData[] = [
+const initialData: DataFormulario[] = [
     {
         nombrePdf: 'Calculo I - Tema 1',
         asignatura: 'Calculo',
@@ -44,15 +43,15 @@ const initialData: FormData[] = [
 ];
 
 export default function Apuntes() {
-    const [formDataList] = useState<FormData[]>(initialData);
+    const [DataFormularioList] = useState<DataFormulario[]>(initialData);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [filteredData, setFilteredData] = useState<FormData[]>(initialData);
+    const [filteredData, setFilteredData] = useState<DataFormulario[]>(initialData);
 
     useEffect(() => {
-        fetchFormData();
+        fetchDataFormulario();
     }, []);
 
-    const fetchFormData = async () => {
+    const fetchDataFormulario = async () => {
         debugger;
         await axios
             .get('/api/hello')
@@ -68,16 +67,14 @@ export default function Apuntes() {
         const term = event.target.value.toLowerCase();
         setSearchTerm(term);
 
-        const filtered = formDataList.filter((item) => {
+        const filtered = DataFormularioList.filter((item) => {
             return item.nombrePdf.toLowerCase().includes(term) || item.asignatura.toLowerCase().includes(term);
         });
         setFilteredData(filtered);
     };
 
     return (
-        <div
-            className={`${geistSans.variable} ${geistMono.variable} flex font-[family-name:var(--font-geist-sans)]`}
-        >
+        <div className={`${geistSans.variable} ${geistMono.variable} flex font-[family-name:var(--font-geist-sans)]`}>
             <div className="bg-white p-8 rounded-lg w-full max-w-xl m-auto mt-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Apuntes</h1>
 
