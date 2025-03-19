@@ -1,4 +1,4 @@
-import { FormData } from '@/interfaces';
+import { DataFormulario } from '@/interfaces';
 
 export const MAX_FILE_SIZE_MB = 4;
 export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -15,7 +15,7 @@ export const ALLOWED_SUBJECTS = [
     'Valores Éticos'
 ];
 export const PDF_NAME_REGEX = /^[a-zA-Z0-9\s]+$/;
-export const DEFAULT_FORM_DATA: FormData = {
+export const DEFAULT_FORM_DATA: DataFormulario = {
     nombrePdf: '',
     asignatura: '',
     archivo: null

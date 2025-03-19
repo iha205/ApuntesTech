@@ -1,9 +1,9 @@
-export interface FormData {
+export interface DataFormulario {
     nombrePdf: string;
     asignatura: string;
     archivo: File | null;
 }
 
 export interface UploadFormProps {
-    onSubmit: (data: FormData) => void;
+    onSubmit: (data: DataFormulario) => void;
 }
