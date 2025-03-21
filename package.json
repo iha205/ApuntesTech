@@ -10,6 +10,7 @@
         "prettier": "prettier . --write"
     },
     "dependencies": {
+        "@vercel/blob": "^0.27.3",
         "axios": "^1.8.2",
         "next": "15.2.1",
         "react": "^19.0.0",
