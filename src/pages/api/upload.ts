@@ -1,7 +1,8 @@
-import { MAX_FILE_SIZE_MB } from '@/constants';
+//import { MAX_FILE_SIZE_MB } from '@/constants';
 import { put } from '@vercel/blob';
 import { NextApiRequest, NextApiResponse } from 'next';
 
+/*
 export const config = {
     api: {
       bodyParser: {
@@ -9,6 +10,7 @@ export const config = {
       },
     },
   }
+    */
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
