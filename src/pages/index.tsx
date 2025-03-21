@@ -1,22 +1,18 @@
 import React from 'react';
-import { Geist, Geist_Mono } from 'next/font/google';
 import UploadForm from '@/components/formulario';
-import { FormData } from '@/interfaces';
+import { DataFormulario } from '@/interfaces';
 import Link from 'next/link';
-
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin']
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin']
-});
+import { geistSans, geistMono } from '@/fonts';
 
 export default function Home() {
-    const handleFormSubmit = (formData: FormData) => {
-        console.log(formData);
+    const handleFormSubmit = async (formData: DataFormulario) => {
+        const { archivo } = formData;
+        console.log(archivo)
+
+        await fetch(`/api/upload`, {
+            method: 'POST',
+            body: archivo
+        });
     };
 
     return (
