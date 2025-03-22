@@ -1,16 +1,6 @@
 import React from 'react';
+import { geistMono, geistSans } from '@/fonts';
 
-import { Geist, Geist_Mono } from 'next/font/google';
-
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin']
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin']
-});
 
 export default function NotFound() {
     return (
