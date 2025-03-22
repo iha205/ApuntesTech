@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, ChangeEvent, useEffect, useCallback } from 'react';
 import { geistMono, geistSans } from '@/fonts';
 import axios from 'axios';
@@ -22,7 +24,7 @@ const formatFileSize = (size: number): string => {
     }
 };
 
-const Apuntes = () => {
+export default function Page() {
     const [blobFiles, setBlobFiles] = useState<BlobFile[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [filteredData, setFilteredData] = useState<BlobFile[]>([]);
@@ -40,7 +42,7 @@ const Apuntes = () => {
                 setError('Error al cargar los datos.');
             }
         } catch (err) {
-            console.error('Error fetching blob files:', err);
+            console.error('Error al cargar los datos:', err);
             setError('Error al cargar los datos.');
         } finally {
             setIsLoading(false);
@@ -89,12 +91,17 @@ const Apuntes = () => {
                                     <li key={index} className="py-4">
                                         <div className="flex flex-row md:flex-row items-start md:items-center justify-between">
                                             <div className="mb-2 md:mb-0">
-                                                <p className="text-lg font-medium text-gray-800">{item.pathname}</p>
+                                                <p className="text-lg font-medium text-gray-800">
+                                                    {item.pathname.split('*')[0]}
+                                                </p>
                                                 <p className="text-sm text-gray-600">
                                                     Subido el: {formatDate(item.uploadedAt)}
                                                 </p>
                                                 <p className="text-sm text-gray-600">
                                                     Tamaño: {formatFileSize(item.size)}
+                                                </p>
+                                                <p className="text-sm text-gray-600">
+                                                    Asignatura: {item.pathname.split('*')[1] ?? 'Sin asignatura'}
                                                 </p>
                                             </div>
                                             <div className="flex flex-col md:flex-row gap-2">
@@ -129,5 +136,3 @@ const Apuntes = () => {
         </div>
     );
 };
-
-export default Apuntes;
