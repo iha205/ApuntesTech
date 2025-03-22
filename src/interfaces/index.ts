@@ -4,6 +4,11 @@ export interface DataFormulario {
     archivo: File | null;
 }
 
-export interface UploadFormProps {
-    onSubmit: (data: DataFormulario) => void;
+export interface BlobFile {
+    url: string;
+    pathname: string;
+    size: number;
+    downloadUrl: string;
+    uploadedAt: string;
 }
+
