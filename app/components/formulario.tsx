@@ -1,30 +1,18 @@
-'use client'
+'use client';
 
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { DataFormulario } from '@/interfaces';
-import {
-    PDF_NAME_REGEX,
-    MAX_FILE_SIZE_BYTES,
-    MAX_FILE_SIZE_MB,
-    DEFAULT_FORM_DATA,
-    ALLOWED_SUBJECTS
-} from '@/constants';
+import { DEFAULT_FORM_DATA, ALLOWED_SUBJECTS } from '@/constants';
 import axios from 'axios';
-
-const validatePdfName = (value: string): string | null =>
-    PDF_NAME_REGEX.test(value) ? null : 'El nombre del PDF solo debe contener caracteres alfanuméricos y espacios.';
-
-const validateFile = (file: File | null): string | null =>
-    file && file.type === 'application/pdf' && file.size <= MAX_FILE_SIZE_BYTES
-        ? null
-        : `Solo se permiten archivos PDF de hasta ${MAX_FILE_SIZE_MB} MB.`;
+import { validatePdfName, validateFile } from '@/utils/utils';
 
 export default function UploadForm() {
     const [DataFormulario, setDataFormulario] = useState<DataFormulario>(DEFAULT_FORM_DATA);
     const [errorArchivo, setErrorArchivo] = useState<string | null>(null);
     const [errorNombrePdf, setErrorNombrePdf] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null); // Estado para el mensaje de respuesta
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
@@ -59,6 +47,12 @@ export default function UploadForm() {
                 });
                 setMessage(response.data.message || 'Archivo subido correctamente.');
                 setDataFormulario(DEFAULT_FORM_DATA);
+                setErrorArchivo(null);
+                setErrorNombrePdf(null);
+                // Reset the file input value
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
                 setMessage('Error al subir el archivo.');
@@ -82,7 +76,7 @@ export default function UploadForm() {
                     name="nombrePdf"
                     value={DataFormulario.nombrePdf}
                     onChange={handleInputChange}
-                    className={`w-full border ${errorNombrePdf ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700`}
+                    className={`w-full border ${errorNombrePdf ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 text-gray-700`}
                     required
                 />
                 {errorNombrePdf && <p className="text-red-500 text-xs mt-1">{errorNombrePdf}</p>}
@@ -97,7 +91,7 @@ export default function UploadForm() {
                     name="asignatura"
                     value={DataFormulario.asignatura}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                    className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700"
                     required
                 >
                     <option value="">Selecciona una asignatura</option>
@@ -120,6 +114,7 @@ export default function UploadForm() {
                         accept=".pdf"
                         onChange={handleFileChange}
                         className="hidden"
+                        ref={fileInputRef}
                     />
                     {DataFormulario.archivo ? (
                         <div className="text-gray-700">Archivo seleccionado: {DataFormulario.archivo.name}</div>
@@ -134,7 +129,7 @@ export default function UploadForm() {
             </div>
             <button
                 type="submit"
-                className="disabled:bg-gray-500 w-full bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                className="disabled:bg-gray-500 w-full bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 cursor-pointer"
                 disabled={isSubmitDisabled}
             >
                 Subir
