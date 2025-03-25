@@ -10,3 +10,4 @@ export async function GET(): Promise<NextResponse<ListBlobResult | { message: st
         return NextResponse.json({ message: 'Error al listar blobs' });
     }
 }
+ 
