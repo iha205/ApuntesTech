@@ -11,4 +11,3 @@ export interface BlobFile {
     downloadUrl: string;
     uploadedAt: string;
 }
-
