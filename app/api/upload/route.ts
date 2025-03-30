@@ -1,6 +1,6 @@
 //import { MAX_FILE_SIZE_MB } from '@/constants';
-import { put } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server'; // Changed NextApiRequest to NextRequest
+import { put } from '@vercel/blob';
 
 /*
 export const config = {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<{ message: st
         if (!fileData) {
             return NextResponse.json({ message: 'No file provided' }, { status: 400 });
         }
-        await put(file.get("nombrePdf")+"*"+file.get("asignatura")+".pdf", fileData, {
+        await put(file.get('nombrePdf') + '*' + file.get('asignatura') + '.pdf', fileData, {
             access: 'public'
         });
         return NextResponse.json({ message: 'Archivo subido exitosamente' });

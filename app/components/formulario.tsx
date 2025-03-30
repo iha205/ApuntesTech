@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { DataFormulario } from '@/interfaces';
-import { DEFAULT_FORM_DATA, ALLOWED_SUBJECTS } from '@/constants';
 import axios from 'axios';
-import { validatePdfName, validateFile } from '@/utils/utils';
+
+import { DataFormulario } from '@/interfaces';
+
+import { ALLOWED_SUBJECTS, DEFAULT_FORM_DATA } from '@/constants';
+import { validateFile, validatePdfName } from '@/utils/utils';
 
 export default function UploadForm() {
     const [DataFormulario, setDataFormulario] = useState<DataFormulario>(DEFAULT_FORM_DATA);

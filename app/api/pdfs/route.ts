@@ -1,5 +1,5 @@
-import { list, ListBlobResult } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import { list, ListBlobResult } from '@vercel/blob';
 
 export async function GET(): Promise<NextResponse<ListBlobResult | { message: string }>> {
     try {
@@ -10,4 +10,3 @@ export async function GET(): Promise<NextResponse<ListBlobResult | { message: st
         return NextResponse.json({ message: 'Error al listar blobs' });
     }
 }
- 
