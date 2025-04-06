@@ -1,30 +1,36 @@
-//import { MAX_FILE_SIZE_MB } from '@/constants';
-import { NextRequest, NextResponse } from 'next/server'; // Changed NextApiRequest to NextRequest
+import { NextRequest, NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
 
-/*
-export const config = {
-    api: {
-      bodyParser: {
-        sizeLimit: `${MAX_FILE_SIZE_MB}mb`,
-      },
-    },
-  }
-*/
-
+/**
+ * Endpoint para subir un archivo a Vercel Blob.
+ *
+ * Recibe un archivo en la solicitud POST, lo guarda en Vercel Blob
+ * y devuelve una respuesta de éxito o error.
+ */
 export async function POST(req: NextRequest): Promise<NextResponse<{ message: string }>> {
-    try {
-        const file = await req.formData();
-        const fileData = file.get('archivo') as File;
-        if (!fileData) {
-            return NextResponse.json({ message: 'No file provided' }, { status: 400 });
-        }
-        await put(file.get('nombrePdf') + '*' + file.get('asignatura') + '.pdf', fileData, {
-            access: 'public'
-        });
-        return NextResponse.json({ message: 'Archivo subido exitosamente' });
-    } catch (error) {
-        console.error('Error al subir el archivo o procesar los datos:', error);
-        return NextResponse.json({ message: 'Error interno del servidor' }, { status: 500 });
+  try {
+    // Obtiene los datos del formulario.
+    const formData = await req.formData();
+
+    // Extrae el archivo del formulario (asumiendo que se llama 'archivo').
+    const file = formData.get('archivo') as File;
+
+    // Si no hay archivo, devuelve un error.
+    if (!file) {
+      return NextResponse.json({ message: 'No se ha proporcionado ningún archivo' }, { status: 400 });
     }
+
+    // Construye el nombre del archivo: nombrePdf*asignatura.pdf
+    const fileName = `${formData.get('nombrePdf')}*${formData.get('asignatura')}.pdf`;
+
+    // Sube el archivo a Vercel Blob con acceso público.
+    await put(fileName, file, { access: 'public' });
+
+    // Devuelve una respuesta de éxito.
+    return NextResponse.json({ message: 'Archivo subido correctamente' });
+  } catch (error) {
+    // Si hay un error, lo registra y devuelve un error interno.
+    console.error('Error al subir el archivo:', error);
+    return NextResponse.json({ message: 'Error interno del servidor' }, { status: 500 });
+  }
 }
