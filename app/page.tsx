@@ -1,72 +1,102 @@
-'use client';
-
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { FaDownload, FaEye, FaTrash } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 import { BlobFile } from '@/interfaces';
-
 import { geistMono, geistSans } from '@/fonts';
 import { formatDate, formatFileSize } from '@/utils/utils';
+import { useRouter } from 'next/router';
+import { useState, useCallback, useEffect, ChangeEvent } from 'react';
+import { FaEye, FaDownload, FaTrash } from 'react-icons/fa';
 
 export default function Page() {
+    // --- Constantes ---
     const router = useRouter();
-    const [blobFiles, setBlobFiles] = useState<BlobFile[]>([]);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [filteredData, setFilteredData] = useState<BlobFile[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
+    // --- Variables de Estado ---
+    const [blobFiles, setBlobFiles] = useState<BlobFile[]>([]); // Lista de archivos PDF obtenidos del servidor.
+    const [searchTerm, setSearchTerm] = useState<string>(''); // Término de búsqueda ingresado por el usuario.
+    const [filteredData, setFilteredData] = useState<BlobFile[]>([]); // Lista de archivos filtrados según el término de búsqueda.
+    const [isLoading, setIsLoading] = useState<boolean>(true); // Indica si los datos se están cargando.
+    const [error, setError] = useState<string | null>(null); // Almacena un mensaje de error si ocurre alguno.
+
+    // --- Métodos ---
+
+    /**
+     * Obtiene la lista de archivos PDF del servidor.
+     * Utiliza useCallback para memorizar la función y evitar re-renderizados innecesarios.
+     */
     const fetchBlobFiles = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
+        setIsLoading(true); // Inicia el estado de carga.
+        setError(null); // Limpia cualquier error previo.
         try {
-            const response = await axios.get('/api/pdfs');
+            const response = await axios.get('/api/pdfs'); // Realiza la petición GET a la API.
             if (response.status === 200) {
-                setBlobFiles(response.data.blobs);
+                setBlobFiles(response.data.blobs); // Actualiza la lista de archivos con los datos recibidos.
             } else {
-                setError('Error al cargar los datos.');
+                setError('Error al cargar los datos.'); // Establece un mensaje de error si la respuesta no es exitosa.
             }
         } catch (err) {
             console.error('Error al cargar los datos:', err);
-            setError('Error al cargar los datos.');
+            setError('Error al cargar los datos.'); // Establece un mensaje de error si ocurre una excepción.
         } finally {
-            setIsLoading(false);
+            setIsLoading(false); // Finaliza el estado de carga.
         }
     }, []);
 
-    useEffect(() => {
-        fetchBlobFiles();
-    }, [fetchBlobFiles]);
-
+    /**
+     * Filtra los archivos según el término de búsqueda.
+     * Se ejecuta cada vez que cambia el término de búsqueda o la lista de archivos.
+     */
     useEffect(() => {
         const term = searchTerm.toLowerCase();
         const filtered = blobFiles.filter((item) => item.pathname.toLowerCase().includes(term));
         setFilteredData(filtered);
     }, [searchTerm, blobFiles]);
 
+    /**
+     * Maneja el cambio en el campo de búsqueda.
+     * @param event Evento de cambio del input de búsqueda.
+     */
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
     };
 
+    /**
+     * Redirige a la página de visualización del PDF seleccionado.
+     * @param item Objeto BlobFile que representa el PDF seleccionado.
+     */
     const handleViewDetails = (item: BlobFile) => {
         router.push(`/verPdf/${encodeURIComponent(JSON.stringify(item))}`);
     };
 
+    /**
+     * Elimina un archivo PDF del servidor y actualiza la lista.
+     * @param item Objeto BlobFile que representa el PDF a eliminar.
+     */
     const handleDelete = async (item: BlobFile) => {
         const confirmDelete = window.confirm(`¿Estás seguro de que quieres eliminar ${item.pathname.split('*')[0]}?`);
         if (confirmDelete) {
             try {
-                await axios.delete(`/api/delete?url=${item.url}`);
+                await axios.delete(`/api/delete?url=${item.url}`); // Realiza la petición DELETE a la API.
+                // Actualiza la lista de archivos eliminando el archivo borrado.
                 setBlobFiles((prevFiles) => prevFiles.filter((file) => file.pathname !== item.pathname));
                 setFilteredData((prevFiles) => prevFiles.filter((file) => file.pathname !== item.pathname));
             } catch (error) {
                 console.error('Error deleting file:', error);
+                setError('Error al eliminar el archivo.');
             }
         }
     };
 
+    // --- Efectos ---
+
+    /**
+     * Carga la lista de archivos al montar el componente.
+     */
+    useEffect(() => {
+        fetchBlobFiles();
+    }, [fetchBlobFiles]);
+
+    // --- Renderizado ---
     return (
         <div
             className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] mt-20 px-4`}
@@ -74,7 +104,7 @@ export default function Page() {
             <div className="bg-white p-8 rounded-lg w-full max-w-xl m-auto mt-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Apuntes</h1>
 
-                <div className="w-full max-w-2xl mb-8">
+                <div className="w-full max-w-2xl">
                     <input
                         type="text"
                         placeholder="Buscar por nombre..."
@@ -94,42 +124,34 @@ export default function Page() {
                                 {filteredData.map((item: BlobFile, index) => {
                                     return (
                                         <li key={index} className="py-4">
-                                            <div className="flex flex-row items-start md:items-center justify-between p-4 rounded-lg text-gray-600">
-                                                <div className="mb-2 md:mb-0">
-                                                    {item.pathname.split('*')[0]}
+                                            <div className="flex flex-col items-start md:items-center md:flex-row justify-between py-4 rounded-lg text-gray-600">
+                                                <div className="flex flex-col mb-2 md:mb-0">
+                                                    <p className="text-xl font-bold">{item.pathname.split('*')[0]}</p>
                                                     <p className="text-sm">Subido el: {formatDate(item.uploadedAt)}</p>
                                                     <p className="text-sm">Tamaño: {formatFileSize(item.size)}</p>
                                                     <p className="text-sm">
-                                                        Asignatura:{' '}
+                                                        Tecnologias:{' '}
                                                         {item.pathname.split('*')[1].replace('.pdf', '') ??
                                                             'Sin asignatura'}
                                                     </p>
                                                 </div>
-                                                <div className="flex flex-col md:flex-row gap-2">
-                                                    <a
-                                                        href={item.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
-                                                    >
-                                                        <FaEye />
-                                                    </a>
+                                                <div className="flex flex-row gap-2">
                                                     <button
                                                         onClick={() => handleViewDetails(item)}
-                                                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                                                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded cursor-pointer flex"
                                                     >
                                                         <FaEye />
                                                     </button>
                                                     <a
                                                         href={item.downloadUrl}
                                                         download
-                                                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
+                                                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded cursor-pointer flex"
                                                     >
                                                         <FaDownload />
                                                     </a>
                                                     <button
                                                         onClick={() => handleDelete(item)}
-                                                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer"
+                                                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer flex"
                                                     >
                                                         <FaTrash />
                                                     </button>
