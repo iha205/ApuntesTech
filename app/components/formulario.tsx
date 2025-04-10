@@ -1,69 +1,88 @@
-'use client';
-
-import React, { ChangeEvent, FormEvent, useRef, useState } from 'react';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
 import axios from 'axios';
 
 import { DataFormulario } from '@/interfaces';
-
 import { ALLOWED_SUBJECTS, DEFAULT_FORM_DATA } from '@/constants';
 import { validateFile, validatePdfName } from '@/utils/utils';
+import { AiOutlineCloudUpload } from 'react-icons/ai';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 
 export default function UploadForm() {
-    const [DataFormulario, setDataFormulario] = useState<DataFormulario>(DEFAULT_FORM_DATA);
-    const [errorArchivo, setErrorArchivo] = useState<string | null>(null);
-    const [errorNombrePdf, setErrorNombrePdf] = useState<string | null>(null);
-    const [message, setMessage] = useState<string | null>(null); // Estado para el mensaje de respuesta
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    // --- Variables de Estado ---
+    const [formData, setFormData] = useState<DataFormulario>(DEFAULT_FORM_DATA); // Datos del formulario
+    const [fileError, setFileError] = useState<string | null>(null); // Error al validar el archivo
+    const [pdfNameError, setPdfNameError] = useState<string | null>(null); // Error al validar el nombre del PDF
+    const [responseMessage, setResponseMessage] = useState<string | null>(null); // Mensaje de respuesta del servidor
 
+    // --- Referencias ---
+    const fileInputRef = useRef<HTMLInputElement>(null); // Referencia al input de tipo archivo
+
+    // --- Constantes ---
+    const isSubmitDisabled = pdfNameError !== null || fileError !== null || formData.archivo === null; // Determina si el botón de enviar está deshabilitado
+
+    // --- Métodos ---
+
+    /**
+     * Maneja los cambios en los inputs de texto y select.
+     * @param event Evento de cambio del input.
+     */
     const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
-        setDataFormulario((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        // Validar el nombre del PDF si el campo modificado es 'nombrePdf'
         if (name === 'nombrePdf') {
-            setErrorNombrePdf(validatePdfName(value));
+            setPdfNameError(validatePdfName(value));
         }
     };
 
+    /**
+     * Maneja el cambio en el input de tipo archivo.
+     * @param event Evento de cambio del input.
+     */
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] ?? null;
-        setErrorArchivo(validateFile(file));
-        setDataFormulario((prev) => ({ ...prev, archivo: file }));
+        setFileError(validateFile(file));
+        setFormData((prev) => ({ ...prev, archivo: file }));
     };
 
+    /**
+     * Maneja el envío del formulario.
+     * @param event Evento de envío del formulario.
+     */
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setMessage(null);
-        if (!errorNombrePdf && !errorArchivo && DataFormulario.archivo) {
-            const { archivo, nombrePdf, asignatura } = DataFormulario;
+        setResponseMessage(null); // Limpiar el mensaje de respuesta anterior
 
-            const formData = new FormData();
-            formData.append('archivo', archivo);
-            formData.append('nombrePdf', nombrePdf);
-            formData.append('asignatura', asignatura);
+        // Verificar si hay errores y si se ha seleccionado un archivo
+        if (!pdfNameError && !fileError && formData.archivo) {
+            const { archivo, nombrePdf, asignatura } = formData;
+
+            const formDataToSend = new FormData();
+            formDataToSend.append('archivo', archivo);
+            formDataToSend.append('nombrePdf', nombrePdf);
+            formDataToSend.append('asignatura', asignatura);
 
             try {
-                const response = await axios.post(`/api/upload`, formData, {
+                const response = await axios.post(`/api/upload`, formDataToSend, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                        'Content-Type': 'multipart/form-data',
+                    },
                 });
-                setMessage(response.data.message || 'Archivo subido correctamente.');
-                setDataFormulario(DEFAULT_FORM_DATA);
-                setErrorArchivo(null);
-                setErrorNombrePdf(null);
-                // Reset the file input value
+                setResponseMessage(response.data.message || 'Archivo subido correctamente.');
+                setFormData(DEFAULT_FORM_DATA); // Resetear el formulario
+                setFileError(null);
+                setPdfNameError(null);
                 if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
+                    fileInputRef.current.value = ''; // Limpiar el input de archivo
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
-                setMessage('Error al subir el archivo.');
+                setResponseMessage('Error al subir el archivo.');
             }
         }
     };
 
-    const isSubmitDisabled = errorNombrePdf !== null || errorArchivo !== null || DataFormulario.archivo === null;
-
+    // --- Renderizado ---
     return (
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">ApuntesTech</h2>
@@ -76,12 +95,12 @@ export default function UploadForm() {
                     type="text"
                     id="nombrePdf"
                     name="nombrePdf"
-                    value={DataFormulario.nombrePdf}
+                    value={formData.nombrePdf}
                     onChange={handleInputChange}
-                    className={`w-full border ${errorNombrePdf ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 text-gray-700`}
+                    className={`w-full border ${pdfNameError ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 text-gray-700`}
                     required
                 />
-                {errorNombrePdf && <p className="text-red-500 text-xs mt-1">{errorNombrePdf}</p>}
+                {pdfNameError && <p className="text-red-500 text-xs mt-1">{pdfNameError}</p>}
             </div>
 
             <div className="mb-4">
@@ -91,7 +110,7 @@ export default function UploadForm() {
                 <select
                     id="asignatura"
                     name="asignatura"
-                    value={DataFormulario.asignatura}
+                    value={formData.asignatura}
                     onChange={handleInputChange}
                     className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700"
                     required
@@ -106,7 +125,7 @@ export default function UploadForm() {
             </div>
 
             <div
-                className={`mb-4 border-2 border-dashed ${errorArchivo ? 'border-red-500' : 'border-gray-400'} rounded-lg p-6`}
+                className={`mb-4 border-2 border-dashed ${fileError ? 'border-red-500' : 'border-gray-400'} rounded-lg p-6`}
             >
                 <label htmlFor="archivo" className="block text-center cursor-pointer">
                     <input
@@ -118,8 +137,8 @@ export default function UploadForm() {
                         className="hidden"
                         ref={fileInputRef}
                     />
-                    {DataFormulario.archivo ? (
-                        <div className="text-gray-700">Archivo seleccionado: {DataFormulario.archivo.name}</div>
+                    {formData.archivo ? (
+                        <div className="text-gray-700">Archivo seleccionado: {formData.archivo.name}</div>
                     ) : (
                         <div>
                             <AiOutlineCloudUpload className="mx-auto h-12 w-12 text-gray-400" size={48} />
@@ -127,7 +146,7 @@ export default function UploadForm() {
                         </div>
                     )}
                 </label>
-                {errorArchivo && <p className="text-red-500 text-xs mt-1">{errorArchivo}</p>}
+                {fileError && <p className="text-red-500 text-xs mt-1">{fileError}</p>}
             </div>
             <button
                 type="submit"
@@ -136,11 +155,11 @@ export default function UploadForm() {
             >
                 Subir
             </button>
-            {message && (
+            {responseMessage && (
                 <div
-                    className={`mt-4 p-2 rounded ${message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
+                    className={`mt-4 p-2 rounded ${responseMessage.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
                 >
-                    {message}
+                    {responseMessage}
                 </div>
             )}
         </form>

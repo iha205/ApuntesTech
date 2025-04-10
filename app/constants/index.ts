@@ -18,21 +18,21 @@ export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 /**
  * @constant ALLOWED_SUBJECTS
- * @description Un array de strings que representa las asignaturas permitidas en la aplicación.
+ * @description Un array de strings que representa las tecnologias de frontend permitidas en la aplicación.
  * @type {string[]}
- * @default ['Matemáticas', 'Lengua', 'Inglés', 'Ciencias Naturales', 'Ciencias Sociales', 'Educación Física', 'Música', 'Plástica', 'Francés', 'Valores Éticos']
+ * @default ['React', 'Angular', 'Vue.js', 'Svelte', 'JavaScript', 'TypeScript', 'HTML', 'CSS', 'Next.js', 'Astro']
  */
 export const ALLOWED_SUBJECTS = [
-    'Matemáticas',
-    'Lengua',
-    'Inglés',
-    'Ciencias Naturales',
-    'Ciencias Sociales',
-    'Educación Física',
-    'Música',
-    'Plástica',
-    'Francés',
-    'Valores Éticos'
+    'React',
+    'Angular',
+    'Vue.js',
+    'Svelte',
+    'JavaScript',
+    'TypeScript',
+    'HTML',
+    'CSS',
+    'Next.js',
+    'Astro'
 ];
 
 /**
