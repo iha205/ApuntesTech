@@ -1,9 +1,10 @@
+"use client"
 import axios from 'axios';
 
 import { BlobFile } from '@/interfaces';
 import { geistMono, geistSans } from '@/fonts';
 import { formatDate, formatFileSize } from '@/utils/utils';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, ChangeEvent } from 'react';
 import { FaEye, FaDownload, FaTrash } from 'react-icons/fa';
 
