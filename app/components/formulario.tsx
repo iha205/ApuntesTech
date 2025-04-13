@@ -8,7 +8,7 @@ import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 
 export default function UploadForm() {
-    // --- Variables de Estado ---
+    // --- Variables de Hooks ---
     const [formData, setFormData] = useState<DataFormulario>(DEFAULT_FORM_DATA); // Datos del formulario
     const [fileError, setFileError] = useState<string | null>(null); // Error al validar el archivo
     const [pdfNameError, setPdfNameError] = useState<string | null>(null); // Error al validar el nombre del PDF
@@ -96,6 +96,7 @@ export default function UploadForm() {
                     type="text"
                     id="nombrePdf"
                     name="nombrePdf"
+                    data-testid="nombre-pdf"
                     value={formData.nombrePdf}
                     onChange={handleInputChange}
                     className={`w-full border ${pdfNameError ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 text-gray-700`}
@@ -110,7 +111,8 @@ export default function UploadForm() {
                 </label>
                 <select
                     id="asignatura"
-                    name="asignatura"
+                    name="asignatura"                    
+                    data-testid="asignatura"
                     value={formData.asignatura}
                     onChange={handleInputChange}
                     className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700"
@@ -133,6 +135,7 @@ export default function UploadForm() {
                         type="file"
                         id="archivo"
                         name="archivo"
+                        data-testid="archivo"
                         accept=".pdf"
                         onChange={handleFileChange}
                         className="hidden"
@@ -151,6 +154,7 @@ export default function UploadForm() {
             </div>
             <button
                 type="submit"
+                data-testid="submit"
                 className="disabled:bg-gray-500 w-full bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 cursor-pointer"
                 disabled={isSubmitDisabled}
             >

@@ -18,7 +18,7 @@ export default function PagePDF() {
     // Convierte el slug (string) en un objeto BlobFile
     const item: BlobFile = useMemo(() => JSON.parse(decodeURIComponent(slug as string)), [slug]);
 
-    // --- Estados ---
+    // --- Hooks ---
     const [pdfData, setPdfData] = useState<{ base64: string; numPages: number } | null>(null); // Datos del PDF (base64 y número de páginas)
     const [isLoading, setIsLoading] = useState<boolean>(true); // Indica si se está cargando el PDF
     const [error, setError] = useState<string | null>(null); // Almacena el mensaje de error, si ocurre alguno
@@ -69,8 +69,17 @@ export default function PagePDF() {
     const renderPdf = () => {
         if (!pdfData) return null;
 
-        return (
-            <div className="flex flex-col items-center max-w-full" ref={containerRef}>
+        return (<>
+        <div className='flex justify-center fixed top-20 left-0 right-0 z-10'>
+            <a
+                    href={`data:application/pdf;base64,${pdfData.base64}`}
+                    download={`${item.pathname.split('*')[0]}.pdf`}
+                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded cursor-pointer flex"
+                >
+                    Descargar PDF
+                </a>
+                </div>
+            <div className="flex flex-col items-center max-w-7xl m-auto" ref={containerRef}>
                 <Document
                     file={`data:application/pdf;base64,${pdfData.base64}`}
                     className={`flex max-w-full justify-center p-4 visible`}
@@ -90,14 +99,9 @@ export default function PagePDF() {
                         ))}
                     </div>
                 </Document>
-                <a
-                    href={`data:application/pdf;base64,${pdfData.base64}`}
-                    download={`${item.pathname.split('*')[0]}.pdf`}
-                    className="bg-green-500 hover:bg-green-600 text-white p-2 rounded mt-4 inline-block"
-                >
-                    Descargar PDF
-                </a>
+                
             </div>
+            </>
         );
     };
 
@@ -108,7 +112,7 @@ export default function PagePDF() {
         if (item.downloadUrl) {
             fetchBase64();
         }
-    }, [fetchBase64, item.downloadUrl]);
+    }, []);
 
     // Efecto para manejar el redimensionamiento de la ventana
     useEffect(() => {
