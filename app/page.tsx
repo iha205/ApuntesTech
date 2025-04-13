@@ -6,13 +6,12 @@ import { geistMono, geistSans } from '@/fonts';
 import { formatDate, formatFileSize } from '@/utils/utils';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, ChangeEvent } from 'react';
-import { FaEye, FaDownload, FaTrash } from 'react-icons/fa';
 
 export default function Page() {
     // --- Constantes ---
     const router = useRouter();
 
-    // --- Variables de Estado ---
+    // --- Variables de Hooks ---
     const [blobFiles, setBlobFiles] = useState<BlobFile[]>([]); // Lista de archivos PDF obtenidos del servidor.
     const [searchTerm, setSearchTerm] = useState<string>(''); // Término de búsqueda ingresado por el usuario.
     const [filteredData, setFilteredData] = useState<BlobFile[]>([]); // Lista de archivos filtrados según el término de búsqueda.
@@ -26,7 +25,7 @@ export default function Page() {
      * Utiliza useCallback para memorizar la función y evitar re-renderizados innecesarios.
      */
     const fetchBlobFiles = useCallback(async () => {
-        setIsLoading(true); // Inicia el estado de carga.
+        setIsLoading(true); // Inicia el Hooks de carga.
         setError(null); // Limpia cualquier error previo.
         try {
             const response = await axios.get('/api/pdfs'); // Realiza la petición GET a la API.
@@ -39,7 +38,7 @@ export default function Page() {
             console.error('Error al cargar los datos:', err);
             setError('Error al cargar los datos.'); // Establece un mensaje de error si ocurre una excepción.
         } finally {
-            setIsLoading(false); // Finaliza el estado de carga.
+            setIsLoading(false); // Finaliza el Hooks de carga.
         }
     }, []);
 
@@ -125,8 +124,8 @@ export default function Page() {
                                 {filteredData.map((item: BlobFile, index) => {
                                     return (
                                         <li key={index} className="py-4">
-                                            <div className="flex flex-col items-start md:items-center md:flex-row justify-between py-4 rounded-lg text-gray-600">
-                                                <div className="flex flex-col mb-2 md:mb-0">
+                                            <div className="flex flex-col items-start justify-between py-4 rounded-lg text-gray-600">
+                                                <div className="flex flex-col mb-2">
                                                     <p className="text-xl font-bold">{item.pathname.split('*')[0]}</p>
                                                     <p className="text-sm">Subido el: {formatDate(item.uploadedAt)}</p>
                                                     <p className="text-sm">Tamaño: {formatFileSize(item.size)}</p>
@@ -141,20 +140,20 @@ export default function Page() {
                                                         onClick={() => handleViewDetails(item)}
                                                         className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded cursor-pointer flex"
                                                     >
-                                                        <FaEye />
+                                                        Ver PDF
                                                     </button>
                                                     <a
                                                         href={item.downloadUrl}
                                                         download
                                                         className="bg-green-500 hover:bg-green-600 text-white p-2 rounded cursor-pointer flex"
                                                     >
-                                                        <FaDownload />
+                                                        Descargar PDF
                                                     </a>
                                                     <button
                                                         onClick={() => handleDelete(item)}
                                                         className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer flex"
                                                     >
-                                                        <FaTrash />
+                                                        Eliminar PDF
                                                     </button>
                                                 </div>
                                             </div>
