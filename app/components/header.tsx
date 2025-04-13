@@ -1,4 +1,3 @@
-// d:\frameworks\ApuntesTech\app\components\Header.tsx
 import Link from 'next/link';
 
 import { geistMono, geistSans } from '@/fonts';
