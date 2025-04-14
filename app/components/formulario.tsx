@@ -158,7 +158,7 @@ export default function UploadForm() {
                 className="disabled:bg-gray-500 w-full bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 cursor-pointer"
                 disabled={isSubmitDisabled}
             >
-                Subir
+                Subir Apunte
             </button>
             {responseMessage && (
                 <div

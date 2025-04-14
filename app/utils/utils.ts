@@ -41,21 +41,25 @@ export const formatFileSize = (size: number): string => {
 };
 
 /**
- * validatePdfName: Valida si un nombre de archivo PDF cumple con el formato permitido.
+ * validatePdfName: Valida si un nombre de archivo PDF 
+ * cumple con el formato permitido.
  * @param value - El nombre del archivo PDF a validar.
  * @returns `null` si el nombre es válido, o un mensaje de error si no lo es.
  */
 export const validatePdfName = (value: string): string | null =>
     // Comprueba si el nombre cumple con la expresión regular definida en PDF_NAME_REGEX.
-    PDF_NAME_REGEX.test(value) ? null : 'El nombre del PDF solo debe contener caracteres alfanuméricos y espacios.';
+    PDF_NAME_REGEX.test(value) ? null : 
+    'El nombre del PDF solo debe contener caracteres alfanuméricos y espacios.';
 
 /**
- * validateFile: Valida si un archivo es un PDF y si su tamaño es menor o igual al máximo permitido.
+ * validateFile: Valida si un archivo es un PDF 
+ * y si su tamaño es menor o igual al máximo permitido.
  * @param file - El archivo a validar (puede ser nulo).
  * @returns `null` si el archivo es válido, o un mensaje de error si no lo es.
  */
 export const validateFile = (file: File | null): string | null =>
-    // Comprueba si el archivo existe, es de tipo 'application/pdf' y su tamaño es menor o igual a MAX_FILE_SIZE_BYTES.
+    // Comprueba si el archivo existe, es de tipo 'application/pdf' 
+    // y su tamaño es menor o igual a MAX_FILE_SIZE_BYTES.
     file && file.type === 'application/pdf' && file.size <= MAX_FILE_SIZE_BYTES
         ? null
         : `Solo se permiten archivos PDF de hasta ${MAX_FILE_SIZE_MB} MB.`;

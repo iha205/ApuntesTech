@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import axios from 'axios';
 
 import { BlobFile } from '@/interfaces';
@@ -101,7 +101,7 @@ export default function Page() {
         <div
             className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] mt-20 px-4`}
         >
-            <div className="bg-white p-8 rounded-lg w-full max-w-xl m-auto mt-8">
+            <div className="bg-white p-8 rounded-lg w-full max-w-xl m-auto my-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Apuntes</h1>
 
                 <div className="w-full max-w-2xl">
@@ -114,9 +114,9 @@ export default function Page() {
                     />
                 </div>
                 {isLoading ? (
-                    <div className="text-center">Cargando...</div>
+                    <div className="text-gray-600 text-center p-8">Cargando apuntes...</div>
                 ) : error ? (
-                    <div className="text-center text-red-500">{error}</div>
+                    <div className="text-center p-8 text-red-500">{error}</div>
                 ) : (
                     <div className="w-full max-w-2xl">
                         {filteredData.length > 0 ? (
@@ -126,10 +126,10 @@ export default function Page() {
                                         <li key={index} className="py-4">
                                             <div className="flex flex-col items-start justify-between py-4 rounded-lg text-gray-600">
                                                 <div className="flex flex-col mb-2">
-                                                    <p className="text-xl font-bold">{item.pathname.split('*')[0]}</p>
-                                                    <p className="text-sm">Subido el: {formatDate(item.uploadedAt)}</p>
-                                                    <p className="text-sm">Tamaño: {formatFileSize(item.size)}</p>
-                                                    <p className="text-sm">
+                                                    <p className="text-2xl font-bold">{item.pathname.split('*')[0]}</p>
+                                                    <p className="text-base">Subido el: {formatDate(item.uploadedAt)}</p>
+                                                    <p className="text-base">Tamaño: {formatFileSize(item.size)}</p>
+                                                    <p className="text-base">
                                                         Tecnologias:{' '}
                                                         {item.pathname.split('*')[1].replace('.pdf', '') ??
                                                             'Sin asignatura'}
@@ -162,9 +162,9 @@ export default function Page() {
                                 })}
                             </ul>
                         ) : (
-                            <div className="bg-white p-6 rounded-md shadow-md">
-                                <p className="text-gray-600">No se encontraron resultados.</p>
-                            </div>
+                            <p className="text-gray-600 text-center p-8">
+                                No se encontraron apuntes que coincidan con su búsqueda.
+                            </p>
                         )}
                     </div>
                 )}
