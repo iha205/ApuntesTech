@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
-import Header from './header';
+import Header from '../header';
 
 vi.mock('@/fonts', () => ({
     geistSans: { variable: 'font-mock-1' },
