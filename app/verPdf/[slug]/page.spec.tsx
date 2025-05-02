@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import Page from "./page";
-import { BlobFile } from "@/interfaces"; // Asegúrate de importar la interfaz
+import { BlobFile } from "@/interfaces";
 
 // Simula (mock) el módulo de fuentes para evitar errores.
 vi.mock('@/fonts', () => ({

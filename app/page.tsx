@@ -6,8 +6,10 @@ import { geistMono, geistSans } from '@/fonts';
 import { formatDate, formatFileSize } from '@/utils/utils';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, ChangeEvent } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
+    const { data: session } = useSession();
     // --- Constantes ---
     const router = useRouter();
 
@@ -127,7 +129,9 @@ export default function Page() {
                                             <div className="flex flex-col items-start justify-between py-4 rounded-lg text-gray-600">
                                                 <div className="flex flex-col mb-2">
                                                     <p className="text-2xl font-bold">{item.pathname.split('*')[0]}</p>
-                                                    <p className="text-base">Subido el: {formatDate(item.uploadedAt)}</p>
+                                                    <p className="text-base">
+                                                        Subido el: {formatDate(item.uploadedAt)}
+                                                    </p>
                                                     <p className="text-base">Tamaño: {formatFileSize(item.size)}</p>
                                                     <p className="text-base">
                                                         Tecnologias:{' '}
@@ -149,12 +153,14 @@ export default function Page() {
                                                     >
                                                         Descargar PDF
                                                     </a>
-                                                    <button
-                                                        onClick={() => handleDelete(item)}
-                                                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer flex"
-                                                    >
-                                                        Eliminar PDF
-                                                    </button>
+                                                    {session && (
+                                                        <button
+                                                            onClick={() => handleDelete(item)}
+                                                            className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer flex"
+                                                        >
+                                                            Eliminar PDF
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         </li>
