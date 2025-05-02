@@ -1,14 +1,13 @@
-import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import Page from "./page";
-import { BlobFile } from "@/interfaces";
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import Page from './page';
+import { BlobFile } from '@/interfaces';
 
 // Simula (mock) el módulo de fuentes para evitar errores.
 vi.mock('@/fonts', () => ({
     geistSans: { variable: 'font-mock-sans' },
-    geistMono: { variable: 'font-mock-mono' },
+    geistMono: { variable: 'font-mock-mono' }
 }));
-
 
 // Simula (mock) el módulo next/navigation y el hook useParams
 vi.mock('next/navigation', () => ({
@@ -27,18 +26,18 @@ vi.mock('next/navigation', () => ({
         // Codifica el objeto como JSON y luego como URI
         const mockSlug = encodeURIComponent(JSON.stringify(mockBlobFile));
         return {
-            slug: mockSlug,
+            slug: mockSlug
         };
-    },
+    }
 }));
 
 // Simula axios para evitar llamadas reales a la red en el test
 vi.mock('axios', () => ({
     default: {
         get: vi.fn().mockResolvedValue({
-            data: new ArrayBuffer(8), // Simula datos de arraybuffer
-        }),
-    },
+            data: new ArrayBuffer(8) // Simula datos de arraybuffer
+        })
+    }
 }));
 
 // Simula pdfjs para evitar errores relacionados con el worker
@@ -48,15 +47,14 @@ vi.mock('react-pdf', async (importOriginal) => {
         ...mod,
         pdfjs: {
             GlobalWorkerOptions: {
-                workerSrc: '', 
+                workerSrc: ''
             },
             getDocument: vi.fn().mockResolvedValue({
-                promise: Promise.resolve({ numPages: 1 }),
-            }),
-        },
+                promise: Promise.resolve({ numPages: 1 })
+            })
+        }
     };
 });
-
 
 describe('verPdf', () => {
     it('se renderiza correctamente y muestra "Cargando PDF..." inicialmente', async () => {

@@ -69,38 +69,38 @@ export default function PagePDF() {
     const renderPdf = () => {
         if (!pdfData) return null;
 
-        return (<>
-        <div className='flex justify-center fixed top-20 left-0 right-0 z-10'>
-            <a
-                    href={`data:application/pdf;base64,${pdfData.base64}`}
-                    download={`${item.pathname.split('*')[0]}.pdf`}
-                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded cursor-pointer flex"
-                >
-                    Descargar PDF
-                </a>
+        return (
+            <>
+                <div className="flex justify-center fixed top-20 left-0 right-0 z-10">
+                    <a
+                        href={`data:application/pdf;base64,${pdfData.base64}`}
+                        download={`${item.pathname.split('*')[0]}.pdf`}
+                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded cursor-pointer flex"
+                    >
+                        Descargar PDF
+                    </a>
                 </div>
-            <div className="flex flex-col items-center max-w-7xl m-auto" ref={containerRef}>
-                <Document
-                    file={`data:application/pdf;base64,${pdfData.base64}`}
-                    className={`flex max-w-full justify-center p-4 visible`}
-                    onLoadSuccess={handleResize} // Ejecuta handleResize cuando el documento se carga correctamente
-                >
-                    <div className="flex flex-col items-center">
-                        {Array.from({ length: pdfData.numPages }, (_, index) => (
-                            <div key={index} className="mb-4 w-full max-w-full">
-                                <Page
-                                    pageNumber={index + 1}
-                                    className={`PDFPage panel w-full max-w-full`}
-                                    renderAnnotationLayer={false}
-                                    renderTextLayer={false}
-                                    width={containerWidth}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </Document>
-                
-            </div>
+                <div className="flex flex-col items-center max-w-7xl m-auto" ref={containerRef}>
+                    <Document
+                        file={`data:application/pdf;base64,${pdfData.base64}`}
+                        className={`flex max-w-full justify-center p-4 visible`}
+                        onLoadSuccess={handleResize} // Ejecuta handleResize cuando el documento se carga correctamente
+                    >
+                        <div className="flex flex-col items-center">
+                            {Array.from({ length: pdfData.numPages }, (_, index) => (
+                                <div key={index} className="mb-4 w-full max-w-full">
+                                    <Page
+                                        pageNumber={index + 1}
+                                        className={`PDFPage panel w-full max-w-full`}
+                                        renderAnnotationLayer={false}
+                                        renderTextLayer={false}
+                                        width={containerWidth}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </Document>
+                </div>
             </>
         );
     };

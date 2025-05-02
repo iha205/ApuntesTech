@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import axios from 'axios';
 
 import { DataFormulario } from '@/interfaces';
@@ -66,8 +66,8 @@ export default function UploadForm() {
             try {
                 const response = await axios.post(`/api/upload`, formDataToSend, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
+                        'Content-Type': 'multipart/form-data'
+                    }
                 });
                 setResponseMessage(response.data.message || 'Archivo subido correctamente.');
                 setFormData(DEFAULT_FORM_DATA); // Resetear el formulario
@@ -111,7 +111,7 @@ export default function UploadForm() {
                 </label>
                 <select
                     id="asignatura"
-                    name="asignatura"                    
+                    name="asignatura"
                     data-testid="asignatura"
                     value={formData.asignatura}
                     onChange={handleInputChange}
